@@ -22,7 +22,9 @@ class BM {
         void cor_stoc(Graph *pg, int n_iter, int n_samp);
         void updates_stoc(std::vector<std::vector<float> > &data, Graph *pg, int n_iter, int n_iter_samp, int n_samp);
         
-        double reconst_cost(std::vector<std::vector<float> > &data, int n_iter);
-        double part_func_ais(int n_step, int n_samp);
+        float reconst_cost(std::vector<std::vector<float> > &data, int n_iter);
+        float part_func_ais(int n_step, int n_samp);
+        
+        float anel_hamil(float beta);
 };
 #endif // BMLIB_BM_H_

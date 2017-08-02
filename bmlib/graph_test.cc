@@ -98,9 +98,9 @@ void test_get(void) {
     check(node.input_idx == 0);
     check(node.n_cntd_edges == 1);
     check(g.get_node("node2", &node).ok);
-    check_double(node.value, 2.0);
+    check_float(node.value, 2.0);
     check(g.get_edge("edge1", &edge).ok);
-    check_double(edge.value, 4.0);
+    check_float(edge.value, 4.0);
 }
 
 void test_get_cntd(void) {
@@ -135,10 +135,10 @@ void test_copy(void) {
     
     check(h.get_node("node1", &node).ok);
     check(node.input_idx == 0);
-    check_double(node.value, 1.0);
+    check_float(node.value, 1.0);
     check(node.n_cntd_edges == 1);
     check(h.get_edge("edge1", &edge).ok);
-    check_double(edge.value, 4.0);
+    check_float(edge.value, 4.0);
 }
 
 int main() {

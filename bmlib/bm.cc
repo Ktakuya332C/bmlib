@@ -171,7 +171,7 @@ void BM::updates_stoc(std::vector<std::vector<float> > &data, Graph *pg, int n_i
         pg->edges[i].value -= ph.edges[i].value;
 }
 
-double BM::reconst_cost(std::vector<std::vector<float> > &data, int n_iter) {
+float BM::reconst_cost(std::vector<std::vector<float> > &data, int n_iter) {
     pacts->copy_from(*pparams);
     float value = 0.0;
     
@@ -229,4 +229,64 @@ double BM::reconst_cost(std::vector<std::vector<float> > &data, int n_iter) {
     
     value /= (float)data.size();
     return value;
+}
+
+float BM::anel_hamil(float beta) {
+    float value = 0.0;
+    for (int i=0; i<pacts->n_nodes; i++) {
+        value -= pparams->nodes[i].value * pacts->nodes[i].value;
+    }
+    for (int i=0; i<pparams->n_edges; i++) {
+        value -= beta * pparams->edges[i].value *
+                      pacts->nodes[pacts->edges[i].node1_idx].value *
+                      pacts->nodes[pacts->edges[i].node2_idx].value;
+    }
+    return value;
+}
+
+float BM::part_func_ais(int n_step, int n_samp) {
+    pacts->copy_from(*pparams);
+    double log_z = 0.0;
+    double beta;
+    
+    // Sample iteration
+    for (int m=0; m<n_samp; m++) {
+        
+        // First sample
+        for (int i=0; i<pacts->n_nodes; i++) {
+            pacts->nodes[i].value = samp(sigmoid(pparams->nodes[i].value));
+        }
+        
+        // Update
+        log_z += anel_hamil(0.0);
+        log_z -= anel_hamil(1.0 / (float)n_step);
+        
+        // Step iteration
+        int idx;
+        for (int k=0; k<n_step; k++) {
+            beta = (float)k / (float)n_step;
+            
+            // Gibbs sample
+            for (int i=0; i<pacts->n_nodes; i++) {
+                pacts->nodes[i].value = pparams->nodes[i].value;
+                for (int j=0; j<pparams->nodes[i].n_cntd_edges; j++) {
+                    idx = pparams->nodes[i].edge_idxs[j];
+                    pacts->nodes[i].value += beta * pparams->edges[idx].value *
+                                                            pacts->nodes[pacts->edges[idx].another_node_idx(i)].value;
+                }
+                pacts->nodes[i].value = samp(sigmoid(pacts->nodes[i].value));
+            }
+            
+            // Update
+            log_z += anel_hamil((float)k / (float)n_step);
+            log_z -= anel_hamil((float)(k+1) / (float)n_step);
+        }
+    }
+    log_z /= (float)n_samp;
+    
+    // Effect of Z_A
+    for (int i=0; i<pparams->n_nodes; i++) {
+        log_z += log(1+exp(pparams->nodes[i].value));
+    }
+    return log_z;
 }
