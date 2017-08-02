@@ -188,6 +188,11 @@ Status Graph::remove_edge(std::string name) {
     for (int i=0; i<n_nodes; i++) {
         for (int j=0; j<nodes[i].n_cntd_edges; j++) {
             if (nodes[i].edge_idxs[j] > idx) nodes[i].edge_idxs[j]--;
+            if (nodes[i].edge_idxs[j] == idx) {
+                std::memcpy(nodes[i].edge_idxs+idx, nodes[i].edge_idxs+idx+1,
+                                     sizeof(int)*(nodes[i].n_cntd_edges - idx - 1));
+                nodes[i].n_cntd_edges--;
+            }
         }
     }
         
@@ -212,6 +217,30 @@ Status Graph::get_edge(std::string name, Edge *pedge) {
         }
     }
     return Status(false, "There is no edge named "+name);
+}
+
+Status Graph::get_nodes_cntd_to_edge(std::string name, std::vector<std::string> *pnodes) {
+    int idx = -1;
+    for (int i=0; i<n_edges; i++)
+        if (std::strcmp(edges[i].name, name.c_str()) == 0) idx = i;
+    if (idx < 0) return Status(false, "The edge named "+name+" does not exists");
+    
+    pnodes->push_back(nodes[edges[idx].node1_idx].name);
+    pnodes->push_back(nodes[edges[idx].node2_idx].name);
+    
+    return Status(true);
+}
+
+Status Graph::get_edges_cntd_to_node(std::string name, std::vector<std::string> *pedges) {
+    int idx = -1;
+    for (int i=0; i<n_nodes; i++)
+        if (std::strcmp(nodes[i].name, name.c_str()) == 0) idx = i;
+    if (idx < 0) return Status(false, "The node named "+name+" does not exists");
+    
+    for (int i=0; i<nodes[idx].n_cntd_edges; i++) {
+        pedges->push_back(edges[nodes[idx].edge_idxs[i]].name);
+    }
+    return Status(true);
 }
 
 void Graph::copy_from(Graph &g) {

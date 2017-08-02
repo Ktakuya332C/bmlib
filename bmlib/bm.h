@@ -23,5 +23,6 @@ class BM {
         void updates_stoc(std::vector<std::vector<float> > &data, Graph *pg, int n_iter, int n_iter_samp, int n_samp);
         
         double reconst_cost(std::vector<std::vector<float> > &data, int n_iter);
+        double part_func_ais(int n_step, int n_samp);
 };
 #endif // BMLIB_BM_H_

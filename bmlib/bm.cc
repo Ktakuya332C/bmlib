@@ -160,6 +160,17 @@ void BM::cor_stoc(Graph *pg, int n_iter, int n_samp) {
     }
 }
 
+void BM::updates_stoc(std::vector<std::vector<float> > &data, Graph *pg, int n_iter, int n_iter_samp, int n_samp) {
+    Graph ph;
+    cor_cdby_data_stoc(data, pg, n_iter);
+    cor_stoc(&ph, n_iter_samp, n_samp);
+    
+    for (int i=0; i<pg->n_nodes; i++)
+        pg->nodes[i].value -= ph.nodes[i].value;
+    for (int i=0; i<pg->n_edges; i++)
+        pg->edges[i].value -= ph.edges[i].value;
+}
+
 double BM::reconst_cost(std::vector<std::vector<float> > &data, int n_iter) {
     pacts->copy_from(*pparams);
     float value = 0.0;
@@ -218,15 +229,4 @@ double BM::reconst_cost(std::vector<std::vector<float> > &data, int n_iter) {
     
     value /= (float)data.size();
     return value;
-}
-
-void BM::updates_stoc(std::vector<std::vector<float> > &data, Graph *pg, int n_iter, int n_iter_samp, int n_samp) {
-    Graph ph;
-    cor_cdby_data_stoc(data, pg, n_iter);
-    cor_stoc(&ph, n_iter_samp, n_samp);
-    
-    for (int i=0; i<pg->n_nodes; i++)
-        pg->nodes[i].value -= ph.nodes[i].value;
-    for (int i=0; i<pg->n_edges; i++)
-        pg->edges[i].value -= ph.edges[i].value;
 }

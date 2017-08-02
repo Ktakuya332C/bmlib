@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Ibmlib -std=c++11 -g
+CXXFLAGS = -Wall -Ibmlib -std=c++11 -O3
 
 .PHONY: example
 example: build/train_rbm

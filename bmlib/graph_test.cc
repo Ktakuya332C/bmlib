@@ -47,9 +47,18 @@ void test_remove_edge(void) {
     check(!g.remove_edge("edge3").ok);
     check(g.remove_edge("edge1").ok);
     check(g.n_edges == 1);
+    check(g.n_nodes == 3);
     
-    //  Further tests are needed
-    // To check connectivity of the graph
+    std::vector<std::string> node_names;
+    check(g.get_nodes_cntd_to_edge("edge2", &node_names).ok);
+    check(node_names.size() == 2);
+    check((node_names[0] == "node1" && node_names[1] == "node3") ||
+               (node_names[1] == "node3" && node_names[0] == "node1"));
+    
+    std::vector<std::string> edge_names;
+    check(g.get_edges_cntd_to_node("node1", &edge_names).ok);
+    check(edge_names.size() == 1);
+    check(edge_names[0] == "edge2");
 }
 
 void test_remove_node(void) {
@@ -58,14 +67,23 @@ void test_remove_node(void) {
     check(g.add_node("node2", 1, 0.5).ok);
     check(g.add_node("node3", -1, 0.5).ok);
     check(g.add_edge("edge1", "node1", "node2", 0.5).ok);
+    check(g.add_edge("edge2", "node1", "node3", 0.5).ok);
     
     check(!g.remove_node("node2").ok);
     check(g.remove_edge("edge1").ok);
     check(g.remove_node("node2").ok);
     check(g.n_nodes == 2);
-
-    //  Further tests are needed
-    // To check connectivity of the graph
+    
+    std::vector<std::string> node_names;
+    check(g.get_nodes_cntd_to_edge("edge2", &node_names).ok);
+    check(node_names.size() == 2);
+    check((node_names[0] == "node1" && node_names[1] == "node3") ||
+               (node_names[1] == "node3" && node_names[0] == "node1"));
+    
+    std::vector<std::string> edge_names;
+    check(g.get_edges_cntd_to_node("node1", &edge_names).ok);
+    check(edge_names.size() == 1);
+    check(edge_names[0] == "edge2");
 }
 
 void test_get(void) {
@@ -83,6 +101,26 @@ void test_get(void) {
     check_double(node.value, 2.0);
     check(g.get_edge("edge1", &edge).ok);
     check_double(edge.value, 4.0);
+}
+
+void test_get_cntd(void) {
+    Graph g(5, 2);
+    check(g.add_node("node1", 0, 1.0).ok);
+    check(g.add_node("node2", 1, 2.0).ok);
+    check(g.add_node("node3", 2, 3.0).ok);
+    check(g.add_edge("edge1", "node1", "node2", 4.0).ok);
+    check(g.add_edge("edge2", "node2", "node3", 4.0).ok);
+    
+    std::vector<std::string> node_names;
+    check(g.get_nodes_cntd_to_edge("edge1", &node_names).ok);
+    check(node_names.size() == 2);
+    check((node_names[0] == "node1" && node_names[1] == "node2") ||
+               (node_names[1] == "node2" && node_names[0] == "node1"));
+    
+    std::vector<std::string> edge_names;
+    check(g.get_edges_cntd_to_node("node1", &edge_names).ok);
+    check(edge_names.size() == 1);
+    check(edge_names[0] == "edge1");
 }
 
 void test_copy(void) {
@@ -111,5 +149,6 @@ int main() {
     test_remove_edge();
     test_remove_node();
     test_get();
+    test_get_cntd();
     test_copy();
 }

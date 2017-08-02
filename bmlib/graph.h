@@ -57,6 +57,8 @@ struct Graph {
     
     Status get_node(std::string name, Node *pnode);
     Status get_edge(std::string name, Edge *pedge);
+    Status get_nodes_cntd_to_edge(std::string name, std::vector<std::string> *pnode_names);
+    Status get_edges_cntd_to_node(std::string name, std::vector<std::string> *pedge_names);
     
     void copy_from(Graph &g);
 };
