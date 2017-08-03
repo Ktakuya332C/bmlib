@@ -85,7 +85,17 @@ void test_part_func(void) {
     
     check_stoc_float(bm.part_func_ais(10000, 10), 4.035266);
     // check_float(bm.part_func_det(), 4.035266);
-    // part_func_imp will be implemented too
+    
+    Graph g;
+    g.copy_from((*bm.pparams));
+    check(g.add_value_to_node("node1", -0.1).ok);
+    check(g.add_value_to_node("node2", 0.1).ok);
+    check(g.add_value_to_edge("edge1", 0.1).ok);
+    
+    double val;
+    check(bm.part_func_imp(g, 4.116641, &val, 100).ok);
+    std::cout << val << std::endl;
+    check_stoc_float(val, 4.035266);
 }
 
 int main() {

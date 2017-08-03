@@ -291,31 +291,29 @@ float BM::part_func_ais(int n_step, int n_samp) {
     return log_z;
 }
 
-/*
+#include <iostream>
 Status BM::part_func_imp(Graph &params, double in_log_z, double *out_log_z, int n_samp) {    
     if (pacts->n_nodes != params.n_nodes)
         return Status(false, "Input parameter graph has different number of nodes");
     if (pacts->n_edges != params.n_edges)
         return Status(false, "Input parameter graph has different number of edges");
     for (int i=0; i<pacts->n_nodes; i++) {
-        if (pacts->nodes[i].name != params.nodes[i].name) {
-            return Status(false, "Input parameter graph has different name node in different place " +
-                                            "Input parameter graph has to have exact same structure including memory map");
+        if (std::strcmp(pacts->nodes[i].name, params.nodes[i].name) != 0) {
+            return Status(false, "Input parameter graph has different name node in different place ");
         }
     }
     for (int i=0; i<pacts->n_edges; i++) {
-        if (pacts->edges[i].name != params.edges[i].name) {
-            return Status(false, "Input parameter graph has different name edge in different place " +
-                                            "Input parameter graph has to have exact same structure including memory map");
+        if (std::strcmp(pacts->nodes[i].name, params.nodes[i].name) != 0) {
+            return Status(false, "Input parameter graph has different name edge in different place ");
         }
     }
     
     // Initialization
-    double z_ratio = 0.0;
+    float z_ratio = 0.0;
     pacts->copy_from(*pparams);
-    BM bm;
-    bm->pparams.copy_from(params);
-    bm->pacts.copy_from(params);
+    BM bm(pacts->max_nodes, pacts->max_edges);
+    bm.pparams->copy_from(params);
+    bm.pacts->copy_from(params);
     
     // Sample iteration
     for (int k=0; k<n_samp; k++) {
@@ -323,17 +321,22 @@ Status BM::part_func_imp(Graph &params, double in_log_z, double *out_log_z, int 
         // Sample
         int idx;
         for (int i=0; i<pacts->n_nodes; i++) {
-            pacts->nodes[i].value = params.nodes[i].value;
+            pacts->nodes[i].value = bm.pparams->nodes[i].value;
             for (int j=0; j<pacts->nodes[i].n_cntd_edges; j++) {
                 idx = pacts->nodes[i].edge_idxs[j];
-                pacts->nodes[i].value += params.edges[idx].value *
+                pacts->nodes[i].value += bm.pparams->edges[idx].value *
                                                         pacts->nodes[pacts->edges[idx].another_node_idx(i)].value;
             }
             pacts->nodes[i].value = samp(sigmoid(pacts->nodes[i].value));
         }
         
         // Calculate z for this sample
-        
-        
+        bm.pacts->copy_from(*pacts);
+        z_ratio += exp(-anel_hamil(1.0) + bm.anel_hamil(1.0));
     }
-}*/
+    z_ratio /= (float)n_samp;
+    
+    *out_log_z = in_log_z + log(z_ratio);
+    
+    return Status(true);
+}

@@ -141,6 +141,34 @@ void test_copy(void) {
     check_float(edge.value, 4.0);
 }
 
+void test_el_ops(void) {
+    Graph g(5, 2);
+    check(g.add_node("node1", 0, 1.0).ok);
+    check(g.add_node("node2", 1, 2.0).ok);
+    check(g.add_node("node3", 2, 3.0).ok);
+    check(g.add_edge("edge1", "node1", "node2", 4.0).ok);
+    
+    check(!g.add_value_to_node("node0", 0.1).ok);
+    check(g.add_value_to_node("node1", 0.1).ok);
+    Node node;
+    check(g.get_node("node1", &node).ok);
+    check_float(node.value, 1.1);
+    
+    g.add_values_to_nodes(0.1);
+    check(g.get_node("node2", &node).ok);
+    check_float(node.value, 2.1);
+
+    check(!g.add_value_to_edge("edge2", 0.1).ok);
+    check(g.add_value_to_edge("edge1", 0.1).ok);
+    Edge edge;
+    check(g.get_edge("edge1", &edge).ok);
+    check_float(edge.value, 4.1);
+    
+    g.add_values_to_edges(0.1);
+    check(g.get_edge("edge1", &edge).ok);
+    check_float(edge.value, 4.2);
+}
+
 int main() {
     test_cntd_to();
     test_get_other_node();
@@ -150,5 +178,6 @@ int main() {
     test_remove_node();
     test_get();
     test_get_cntd();
+    test_el_ops();
     test_copy();
 }

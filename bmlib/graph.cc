@@ -243,6 +243,36 @@ Status Graph::get_edges_cntd_to_node(std::string name, std::vector<std::string> 
     return Status(true);
 }
 
+Status Graph::add_value_to_node(std::string name, float value) {
+    int idx = -1;
+    for (int i=0; i<n_nodes; i++)
+        if (std::strcmp(nodes[i].name, name.c_str()) == 0) idx = i;
+    if (idx < 0) return Status(false, "The node named "+name+" does not exists");
+    
+    nodes[idx].value += value;
+    return Status(true);
+}
+
+void Graph::add_values_to_nodes(float value) {
+    for (int i=0; i<n_nodes; i++)
+        nodes[i].value += value;
+}
+
+Status Graph::add_value_to_edge(std::string name, float value) {
+    int idx = -1;
+    for (int i=0; i<n_edges; i++)
+        if (std::strcmp(edges[i].name, name.c_str()) == 0) idx = i;
+    if (idx < 0) return Status(false, "The edge named "+name+" does not exists");
+    
+    edges[idx].value += value;
+    return Status(true);
+}
+
+void Graph::add_values_to_edges(float value) {
+    for (int i=0; i<n_edges; i++)
+        edges[i].value += value;
+}
+
 void Graph::copy_from(Graph &g) {
     delete[] nodes;
     delete[] edges;

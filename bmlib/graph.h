@@ -60,6 +60,11 @@ struct Graph {
     Status get_nodes_cntd_to_edge(std::string name, std::vector<std::string> *pnode_names);
     Status get_edges_cntd_to_node(std::string name, std::vector<std::string> *pedge_names);
     
+    Status add_value_to_node(std::string name, float value);
+    Status add_value_to_edge(std::string name, float value);
+    void add_values_to_nodes(float value);
+    void add_values_to_edges(float value);
+    
     void copy_from(Graph &g);
 };
 
