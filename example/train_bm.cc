@@ -32,7 +32,7 @@ int main() {
         {0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0},
     };
     
-    std::cout << "Construct RBM" << std::endl;
+    std::cout << "Construct BM" << std::endl;
     std::normal_distribution<float> norm_dist(0.0, 1.0 / (float)(IMG_SIZE+N_HID));
     BM bm(IMG_SIZE + N_HID, (IMG_SIZE +N_HID)*(IMG_SIZE +N_HID));
     for (int i=0; i<IMG_SIZE; i++)
