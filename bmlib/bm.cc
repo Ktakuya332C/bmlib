@@ -290,3 +290,50 @@ float BM::part_func_ais(int n_step, int n_samp) {
     }
     return log_z;
 }
+
+/*
+Status BM::part_func_imp(Graph &params, double in_log_z, double *out_log_z, int n_samp) {    
+    if (pacts->n_nodes != params.n_nodes)
+        return Status(false, "Input parameter graph has different number of nodes");
+    if (pacts->n_edges != params.n_edges)
+        return Status(false, "Input parameter graph has different number of edges");
+    for (int i=0; i<pacts->n_nodes; i++) {
+        if (pacts->nodes[i].name != params.nodes[i].name) {
+            return Status(false, "Input parameter graph has different name node in different place " +
+                                            "Input parameter graph has to have exact same structure including memory map");
+        }
+    }
+    for (int i=0; i<pacts->n_edges; i++) {
+        if (pacts->edges[i].name != params.edges[i].name) {
+            return Status(false, "Input parameter graph has different name edge in different place " +
+                                            "Input parameter graph has to have exact same structure including memory map");
+        }
+    }
+    
+    // Initialization
+    double z_ratio = 0.0;
+    pacts->copy_from(*pparams);
+    BM bm;
+    bm->pparams.copy_from(params);
+    bm->pacts.copy_from(params);
+    
+    // Sample iteration
+    for (int k=0; k<n_samp; k++) {
+        
+        // Sample
+        int idx;
+        for (int i=0; i<pacts->n_nodes; i++) {
+            pacts->nodes[i].value = params.nodes[i].value;
+            for (int j=0; j<pacts->nodes[i].n_cntd_edges; j++) {
+                idx = pacts->nodes[i].edge_idxs[j];
+                pacts->nodes[i].value += params.edges[idx].value *
+                                                        pacts->nodes[pacts->edges[idx].another_node_idx(i)].value;
+            }
+            pacts->nodes[i].value = samp(sigmoid(pacts->nodes[i].value));
+        }
+        
+        // Calculate z for this sample
+        
+        
+    }
+}*/

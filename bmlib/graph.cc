@@ -247,6 +247,8 @@ void Graph::copy_from(Graph &g) {
     delete[] nodes;
     delete[] edges;
     
+    max_nodes = g.max_nodes;
+    max_edges = g.max_edges;
     nodes = new Node[g.max_nodes];
     edges = new Edge[g.max_edges];
     std::memcpy(nodes, g.nodes, sizeof(Node)*g.n_nodes);

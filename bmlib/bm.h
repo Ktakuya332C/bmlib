@@ -24,6 +24,7 @@ class BM {
         
         float reconst_cost(std::vector<std::vector<float> > &data, int n_iter);
         float part_func_ais(int n_step, int n_samp);
+        Status part_func_imp(Graph &params, double in_log_z, double *out_log_z, int n_samp);
         
         float anel_hamil(float beta);
 };
