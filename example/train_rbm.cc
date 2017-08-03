@@ -85,6 +85,7 @@ int main() {
     Graph updates;
     std::vector<std::vector<float> > batch(B_SIZE);
     int batch_idx;
+    float value;
     for (int k=0; k<N_TRAIN; k++) {
         for (int i=0; i<B_SIZE; i++) {
             batch_idx = int_dist(gen);
@@ -94,7 +95,8 @@ int main() {
         bm.updates_stoc(batch, &updates, N_ITER, N_ITER_SAMP, N_SAMP);
         check(bm.learn(updates, LR));
         
-        std::cout << "Epoch " << k << " cost " << bm.reconst_cost(batch, N_ITER) << std::endl; 
+        check(bm.reconst_cost(batch, &value, N_ITER));
+        std::cout << "Epoch " << k << " cost " <<  value << std::endl; 
     }
 
 }

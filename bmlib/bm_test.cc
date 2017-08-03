@@ -72,7 +72,9 @@ void test_reconst_cost(void) {
     check(bm.add_bm_edge("edge2", "node2", "node3", 1.0).ok);
     
     std::vector<std::vector<float> > data(2, std::vector<float>(1, 1.0));
-    check_float(bm.reconst_cost(data, 10), 0.218608);
+    float val;
+    check(bm.reconst_cost(data, &val, 10).ok);
+    check_float(val, 0.218608);
 }
 
 void test_part_func(void) {
@@ -83,8 +85,11 @@ void test_part_func(void) {
     check(bm.add_bm_edge("edge1", "node1", "node2", 1.0).ok);
     check(bm.add_bm_edge("edge2", "node2", "node3", 1.0).ok);
     
-    check_stoc_float(bm.part_func_ais(10000, 10), 4.035266);
-    // check_float(bm.part_func_det(), 4.035266);
+    float val;
+    check(bm.part_func_ais(&val, 10000, 10).ok);
+    check_stoc_float(val, 4.035266);
+    check(bm.part_func_det(&val).ok);
+    check_float(val, 4.035266);
     
     Graph g;
     g.copy_from((*bm.pparams));
@@ -92,10 +97,22 @@ void test_part_func(void) {
     check(g.add_value_to_node("node2", 0.1).ok);
     check(g.add_value_to_edge("edge1", 0.1).ok);
     
-    double val;
     check(bm.part_func_imp(g, 4.116641, &val, 100).ok);
-    std::cout << val << std::endl;
     check_stoc_float(val, 4.035266);
+}
+
+void test_kl(void) {
+    BM bm(3, 2);
+    check(bm.add_vis_node("node1", 0, 0.5).ok);
+    check(bm.add_hid_node("node2", 0.5).ok);
+    check(bm.add_hid_node("node3", 0.5).ok);
+    check(bm.add_bm_edge("edge1", "node1", "node2", 1.0).ok);
+    check(bm.add_bm_edge("edge2", "node2", "node3", 1.0).ok);
+    
+    float val;
+    std::vector<std::vector<float> > data(2, std::vector<float>(1, 1.0));
+    check(bm.kl_det(data, &val).ok);
+    check_float(val, 0.231462);
 }
 
 int main() {
@@ -105,4 +122,5 @@ int main() {
     test_cor_stoc();
     test_reconst_cost();
     test_part_func();
+    test_kl();
 }

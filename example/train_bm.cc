@@ -8,7 +8,7 @@
 
 #define IMG_SIZE 8
 #define N_HID 4
-#define N_TRAIN 100
+#define N_TRAIN 1000
 #define N_ITER 10
 #define N_ITER_SAMP 2
 #define N_SAMP 20
@@ -60,11 +60,18 @@ int main() {
     
     std::cout << "Train BM" << std::endl;
     Graph updates;
+    float value;
     for (int k=0; k<N_TRAIN; k++) {
         bm.updates_stoc(data, &updates, N_ITER, N_ITER_SAMP, N_SAMP);
         check(bm.learn(updates, LR));
         
-        std::cout << "Epoch " << k << " cost " << bm.reconst_cost(data, N_ITER) << std::endl; 
+        if (k%100 == 0) {
+            std::cout << "Epoch " << k << std::endl;
+            check(bm.reconst_cost(data, &value, N_ITER));
+            std::cout <<  "reconst cost " << value << " "; 
+            check(bm.kl_det(data, &value));
+            std::cout << "KL cost " << value << std::endl;
+        }
     }
 
 }

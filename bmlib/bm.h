@@ -22,9 +22,12 @@ class BM {
         void cor_stoc(Graph *pg, int n_iter, int n_samp);
         void updates_stoc(std::vector<std::vector<float> > &data, Graph *pg, int n_iter, int n_iter_samp, int n_samp);
         
-        float reconst_cost(std::vector<std::vector<float> > &data, int n_iter);
-        float part_func_ais(int n_step, int n_samp);
-        Status part_func_imp(Graph &params, double in_log_z, double *out_log_z, int n_samp);
+        Status part_func_ais(float *out_log_z, int n_step, int n_samp);
+        Status part_func_det(float *out_log_z);
+        Status part_func_imp(Graph &params, float in_log_z, float *out_log_z, int n_samp);
+        
+        Status reconst_cost(std::vector<std::vector<float> > &data, float *cost, int n_iter);
+        Status kl_det(std::vector<std::vector<float> > &data, float *cost);
         
         float anel_hamil(float beta);
 };
