@@ -2,7 +2,13 @@ CXX = g++
 CXXFLAGS = -Wall -Ibmlib -std=c++11 -O3
 
 .PHONY: example
-example: build/train_rbm
+example: build/train_rbm build/train_bm
+
+build/train_bm: build/train_bm.o build/graph.o build/bm.o build/math_utils.o
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+build/train_bm.o: example/train_bm.cc
+	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 build/train_rbm: build/train_rbm.o build/graph.o build/bm.o build/math_utils.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
