@@ -1,3 +1,4 @@
-input/
 build/
+input/*
+!input/fetch_mnist.sh
 
