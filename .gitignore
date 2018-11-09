@@ -1,4 +1,5 @@
 build/
 input/*
 !input/fetch_mnist.sh
+!input/README.md
 
