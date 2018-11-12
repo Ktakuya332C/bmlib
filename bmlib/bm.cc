@@ -250,7 +250,7 @@ Status BM::part_func_det(float *out_log_z) {
     return Status(true);
 }
 
-Status BM::part_func_imp(Graph &params, float in_log_z, float *out_log_z, int n_samp) {    
+Status BM::part_func_imp(Graph &params, float in_log_z, float *out_log_z, int n_samp) {
     if (pacts->n_nodes != params.n_nodes)
         return Status(false, "Input parameter graph has different number of nodes");
     if (pacts->n_edges != params.n_edges)
@@ -360,7 +360,6 @@ Status BM::reconst_cost(std::vector<std::vector<float> > &data, float *cost, int
     return Status(true);
 }
 
-#include <iostream>
 Status BM::kl_det(std::vector<std::vector<float> > &data, float *cost) {
     pacts->copy_from(*pparams);
     
